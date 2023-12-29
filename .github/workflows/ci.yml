@@ -162,6 +162,15 @@ jobs:
           CIBW_BUILD_VERBOSITY: 3
           REQUIRE_CYTHON: 1
 
+      - name: Build pure wheel
+        if: runner.os == 'Linux'
+        run: |
+          pip install build
+          cp pyproject.toml pyproject.toml.bak
+          sed -i -E -e '/\[tool.poetry.build\]/,/^$/d' pyproject.toml
+          python -m build --wheel --outdir ./wheelhouse .
+          mv pyproject.toml.bak pyproject.toml
+
       - uses: actions/upload-artifact@v3
         with:
           path: ./wheelhouse/*.whl
